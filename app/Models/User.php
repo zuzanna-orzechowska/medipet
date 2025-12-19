@@ -6,6 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -21,6 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
     ];
 
     /**
@@ -45,4 +48,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function role(): BelongsTo
+        {
+            return $this->belongsTo(Role::class);
+        }
+
+    public function pets(): HasMany
+        {
+            return $this->hasMany(Pet::class);
+        }
+
+    public function doctorAppointments(): HasMany
+        {
+            return $this->hasMany(Appointment::class, 'doctor_id');
+        }
+
+    public function clientAppointments(): HasMany
+        {
+            return $this->hasMany(Appointment::class, 'client_id');
+        }
 }
