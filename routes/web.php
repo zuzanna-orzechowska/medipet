@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PetController;
+use App\Http\Controllers\AppointmentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,8 +22,7 @@ Route::middleware(['auth', 'role:klient'])->group(function () {
     })->name('dashboard');
 
     Route::resource('pets', PetController::class);
-    
-    // Route::get('/my-appointments', [PetController::class, 'appointments'])->name('pets.appointments');
+    Route::resource('appointments', AppointmentController::class);
 });
 
 // trasa lekarza

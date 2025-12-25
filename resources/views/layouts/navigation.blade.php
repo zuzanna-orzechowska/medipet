@@ -19,6 +19,10 @@
                     <x-nav-link :href="route('pets.index')" :active="request()->routeIs('pets.*')">
                         {{ __('Moje Zwierzęta') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('appointments.index')" :active="request()->routeIs('appointments.*')">
+                        {{ __('Wizyty') }}
+                    </x-nav-link>
                 </div>
             </div>
 

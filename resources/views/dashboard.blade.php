@@ -14,19 +14,42 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="p-6 bg-emerald-50 rounded-2xl border border-emerald-100 hover:shadow-md transition">
-                            <h4 class="font-bold text-emerald-900 mb-2">Twoje Zwierzęta</h4>
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-2xl">🐾</span>
+                                <h4 class="font-bold text-emerald-900">Twoje Zwierzęta</h4>
+                            </div>
                             <p class="text-sm text-gray-500 mb-4">Masz zarejestrowanych {{ Auth::user()->pets->count() }} zwierząt.</p>
-                            <a href="{{ route('pets.index') }}" class="inline-flex items-center text-emerald-600 font-semibold hover:underline">
+                            <a href="{{ route('pets.index') }}" class="inline-flex items-center text-emerald-600 font-semibold hover:underline focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded px-1">
                                 Zarządzaj zwierzakami &rarr;
                             </a>
                         </div>
 
-                        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
-                            <h4 class="font-bold text-slate-900 mb-2">Nadchodzące wizyty</h4>
-                            <p class="text-sm text-gray-500 mb-4">Brak zaplanowanych wizyt w najbliższym czasie.</p>
-                            <button class="text-slate-400 font-semibold cursor-not-allowed" disabled>
-                                Umów wizytę (wkrótce)
-                            </button>
+                        <div class="p-6 bg-white rounded-2xl border border-emerald-100 hover:shadow-md transition shadow-sm">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="text-2xl">🗓️</span>
+                                <h4 class="font-bold text-slate-900">Wizyty i Terminy</h4>
+                            </div>
+                            
+                            @php
+                                $appointmentsCount = \App\Models\Appointment::whereIn('pet_id', Auth::user()->pets->pluck('id'))->count();
+                            @endphp
+
+                            <p class="text-sm text-gray-500 mb-4">
+                                @if($appointmentsCount > 0)
+                                    Masz zaplanowane {{ $appointmentsCount }} wizyty.
+                                @else
+                                    Nie masz jeszcze umówionych wizyt.
+                                @endif
+                            </p>
+
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <a href="{{ route('appointments.index') }}" class="text-sm font-bold text-emerald-600 hover:underline focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded px-1">
+                                    Zobacz historię wizyt
+                                </a>
+                                <a href="{{ route('appointments.create') }}" class="text-sm font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-lg hover:bg-emerald-100 transition">
+                                    + Umów nową wizytę
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
