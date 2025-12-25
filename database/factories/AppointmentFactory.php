@@ -21,7 +21,7 @@ class AppointmentFactory extends Factory
     {
         return [
             'appointment_date' => fake()->dateTimeBetween('now', '+3 month'),
-            'status' => 'scheduled',
+            'status' => 'oczekująca',
             'notes' => fake()->paragraph(),
             'client_id' => User::factory(), 
             'doctor_id' => User::factory(),

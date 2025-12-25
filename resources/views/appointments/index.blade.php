@@ -50,20 +50,24 @@
                                 </div>
 
                                 <div class="flex items-center justify-between md:justify-end gap-6">
+                                    <a href="{{ route('appointments.show', $appointment) }}" class="text-emerald-600 hover:text-emerald-800 font-bold text-sm transition-colors border-b border-transparent hover:border-emerald-800">
+                                        Szczegóły
+                                    </a>
+
                                     <span class="px-4 py-1 rounded-full text-xs font-bold uppercase 
-                                        {{ $appointment->status == 'oczekująca' ? 'bg-amber-100 text-amber-700' : '' }}
+                                        {{ in_array($appointment->status, ['oczekująca', 'scheduled']) ? 'bg-amber-100 text-amber-700' : '' }}
                                         {{ $appointment->status == 'zatwierdzona' ? 'bg-emerald-100 text-emerald-700' : '' }}
-                                        {{ $appointment->status == 'zakończona' ? 'bg-slate-100 text-slate-600' : '' }}
-                                        {{ $appointment->status == 'odwołana' ? 'bg-rose-100 text-rose-700' : '' }}">
+                                        {{ $appointment->status == 'zakończona' || $appointment->status == 'completed' ? 'bg-blue-100 text-blue-700' : '' }}
+                                        {{ $appointment->status == 'odwołana' || $appointment->status == 'cancelled' ? 'bg-rose-100 text-rose-700' : '' }}">
                                         {{ $appointment->status }}
                                     </span>
 
-                                    @if($appointment->status == 'oczekująca')
+                                    @if(in_array($appointment->status, ['oczekująca', 'scheduled']))
                                         <form action="{{ route('appointments.destroy', $appointment) }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz odwołać tę wizytę w MediPet?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-rose-600 hover:text-rose-800 font-bold text-sm transition-colors border-b border-transparent hover:border-rose-800">
-                                                Odwołaj wizytę
+                                                Odwołaj
                                             </button>
                                         </form>
                                     @endif

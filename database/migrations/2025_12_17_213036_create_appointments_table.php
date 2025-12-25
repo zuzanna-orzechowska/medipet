@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('pet_id')->constrained()->onDelete('cascade');
             $table->foreignId('service_id')->constrained();
             $table->dateTime('appointment_date');
-            $table->enum('status', ['scheduled', 'completed', 'cancelled'])->default('scheduled');
+            $table->enum('status', ['oczekująca', 'zakończona', 'odwołana', 'zatwierdzona'])->default('oczekująca');
             $table->text('notes')->nullable();
             $table->timestamps();
         });

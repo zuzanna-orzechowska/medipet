@@ -39,6 +39,19 @@
                     </div>
 
                     <div>
+                        <x-input-label for="doctor_id" :value="__('Wybierz lekarza')" class="text-emerald-900 font-bold" />
+                        <select id="doctor_id" name="doctor_id" class="mt-1 block w-full border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl shadow-sm" required>
+                            <option value="" disabled selected>Wybierz specjalistę...</option>
+                            @foreach($doctors as $doctor)
+                                <option value="{{ $doctor->id }}" {{ old('doctor_id') == $doctor->id ? 'selected' : '' }}>
+                                    lek. wet. {{ $doctor->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <x-input-error class="mt-2" :messages="$errors->get('doctor_id')" />
+                    </div>
+
+                    <div>
                         <x-input-label for="appointment_date" :value="__('Preferowana data i godzina')" class="text-emerald-900 font-bold" />
                         <x-text-input id="appointment_date" name="appointment_date" type="datetime-local" class="mt-1 block w-full border-emerald-200 focus:border-emerald-500 focus:ring-emerald-500 rounded-xl shadow-sm" :value="old('appointment_date')" required />
                         <p class="text-xs text-slate-400 mt-1 italic">Klinika MediPet pracuje w godzinach 08:00 - 20:00.</p>

@@ -27,11 +27,9 @@ Route::middleware(['auth', 'role:klient'])->group(function () {
 
 // trasa lekarza
 Route::middleware(['auth', 'role:lekarz'])->group(function () {
-    Route::get('/doctor/dashboard', function () {
-        return view('doctor.dashboard'); 
-    })->name('doctor.dashboard');
-
-    // Route::resource('appointments', AppointmentController::class)->only(['index', 'update', 'show']);
+    Route::get('/doctor/dashboard', [AppointmentController::class, 'doctorIndex'])->name('doctor.dashboard');
+    
+    Route::patch('/appointments/{appointment}/status', [AppointmentController::class, 'updateStatus'])->name('doctor.appointments.status');
 });
 
 //trasa admina
@@ -43,5 +41,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Route::resource('services', ServiceController::class);
     // Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
 });
+
 
 require __DIR__.'/auth.php';
