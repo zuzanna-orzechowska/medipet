@@ -1,7 +1,47 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PetController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+//trasa klienta
+Route::middleware(['auth', 'role:klient'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    Route::resource('pets', PetController::class);
+    
+    // Route::get('/my-appointments', [PetController::class, 'appointments'])->name('pets.appointments');
+});
+
+// trasa lekarza
+Route::middleware(['auth', 'role:lekarz'])->group(function () {
+    Route::get('/doctor/dashboard', function () {
+        return view('doctor.dashboard'); 
+    })->name('doctor.dashboard');
+
+    // Route::resource('appointments', AppointmentController::class)->only(['index', 'update', 'show']);
+});
+
+//trasa admina
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+
+    // Route::resource('services', ServiceController::class);
+    // Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+});
+
+require __DIR__.'/auth.php';
