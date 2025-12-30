@@ -1,31 +1,26 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Pet;
+use App\Services\PetService;
 use Illuminate\Http\Request;
 
 class PetController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $petService;
+
+    public function __construct(PetService $petService)
+    {
+        $this->petService = $petService;
+    }
+
     public function index()
     {
         $pets = auth()->user()->pets;
         return view('pets.index', compact('pets'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('pets.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -36,36 +31,21 @@ class PetController extends Controller
         ]);
 
         auth()->user()->pets()->create($validated);
-
-        return redirect()->route('pets.index')->with('success', 'Zwierzę zostało dodane pomyślnie!');
+        return redirect()->route('pets.index')->with('success', 'Zwierzę zostało dodane!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Pet $pet)
     {
-        if ($pet->user_id !== auth()->id()) {
+        if (!$this->petService->canUserManagePet(auth()->id(), $pet->user_id)) {
             abort(403);
         }
 
         return view('pets.edit', compact('pet'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Pet $pet)
     {
-        if ($pet->user_id !== auth()->id()) {
+        if (!$this->petService->canUserManagePet(auth()->id(), $pet->user_id)) {
             abort(403);
         }
 
@@ -77,21 +57,16 @@ class PetController extends Controller
         ]);
 
         $pet->update($validated);
-
-        return redirect()->route('pets.index')->with('success', 'Dane pupila zostały zaktualizowane.');
+        return redirect()->route('pets.index')->with('success', 'Dane zostały zaktualizowane.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Pet $pet)
     {
-        if ($pet->user_id !== auth()->id()) {
+        if (!$this->petService->canUserManagePet(auth()->id(), $pet->user_id)) {
             abort(403);
         }
 
         $pet->delete();
-
-        return redirect()->route('pets.index')->with('success', 'Zwierzak został usunięty z systemu.');
-        }
+        return redirect()->route('pets.index')->with('success', 'Zwierzak został usunięty.');
+    }
 }

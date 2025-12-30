@@ -5,13 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use App\Models\Pet;
 use App\Models\Service;
+use App\Services\AppointmentService;
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
 {
+    protected $appointmentService;
+
+    public function __construct(AppointmentService $appointmentService)
+    {
+        $this->appointmentService = $appointmentService;
+    }
+
     public function index()
     {
-        $appointments = Appointment::whereIn('pet_id', auth()->user()->pets->pluck('id'))
+        $appointments = Appointment::where('client_id', auth()->id())
             ->with(['pet', 'service'])
             ->orderBy('appointment_date', 'asc')
             ->get();
@@ -43,7 +51,8 @@ class AppointmentController extends Controller
         ]);
 
         $pet = Pet::findOrFail($validated['pet_id']);
-        if ($pet->user_id !== auth()->id()) {
+        
+        if (!$this->appointmentService->isOwner(auth()->id(), $pet->user_id)) {
             abort(403);
         }
 
@@ -62,23 +71,23 @@ class AppointmentController extends Controller
 
     public function destroy(Appointment $appointment)
     {
-        if ($appointment->pet->user_id !== auth()->id()) {
+        //sprawdzenie uprawnień przez serwis
+        if (!$this->appointmentService->isOwner(auth()->id(), $appointment->client_id)) {
             abort(403);
         }
 
-        if ($appointment->status !== 'oczekująca') {
-            return back()->with('error', 'Nie można odwołać wizyty, która już się odbyła lub została zatwierdzona.');
+        if (!$this->appointmentService->canBeCancelled($appointment->status)) {
+            return back()->with('error', 'Nie można odwołać wizyty w tym statusie.');
         }
 
         $appointment->delete();
 
-        return redirect()->route('appointments.index')->with('success', 'Wizyta została pomyślnie odwołana.');
+        return redirect()->route('appointments.index')->with('success', 'Wizyta odwołana.');
     }
 
-    //widok wizyty dla lekarza
     public function doctorIndex()
     {
-        $appointments = \App\Models\Appointment::where('doctor_id', auth()->id())
+        $appointments = Appointment::where('doctor_id', auth()->id())
             ->with(['pet', 'service', 'client'])
             ->orderBy('appointment_date', 'asc')
             ->get();
@@ -86,7 +95,7 @@ class AppointmentController extends Controller
         return view('doctor.dashboard', compact('appointments'));
     }
 
-    public function updateStatus(Request $request, \App\Models\Appointment $appointment)
+    public function updateStatus(Request $request, Appointment $appointment)
     {
         $request->validate(['status' => 'required|in:zatwierdzona,odwołana,zakończona']);
         
@@ -97,7 +106,7 @@ class AppointmentController extends Controller
 
     public function show(Appointment $appointment)
     {
-        if ($appointment->client_id !== auth()->id()) {
+        if (!$this->appointmentService->isOwner(auth()->id(), $appointment->client_id)) {
             abort(403);
         }
         $appointment->load(['pet', 'doctor', 'service']);
