@@ -5,17 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Pet;
 use App\Models\Appointment;
+use App\Services\AdminService;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+    protected $adminService;
+
+    public function __construct(AdminService $adminService)
+    {
+        $this->adminService = $adminService;
+    }
+
     public function dashboard()
     {
-        $stats = [
-            'users' => User::count(),
-            'pets' => Pet::count(),
-            'appointments' => Appointment::count(),
-        ];
+        //statystyki w serwisie
+        $stats = $this->adminService->formatDashboardStats(
+            User::count(), 
+            Pet::count(), 
+            Appointment::count()
+        );
 
         return view('admin.dashboard', compact('stats'));
     }
@@ -70,7 +79,7 @@ class AdminController extends Controller
 
     public function destroyUser(User $user)
     {
-        if ($user->id === auth()->id()) {
+        if (!$this->adminService->canDeleteUser(auth()->id(), $user->id)) {
             return back()->with('error', 'Nie możesz usunąć własnego konta administratora!');
         }
         
@@ -90,12 +99,12 @@ class AdminController extends Controller
         return view('admin.pets-edit', compact('pet', 'users'));
     }
 
-   public function updatePet(Request $request, Pet $pet)
+    public function updatePet(Request $request, Pet $pet)
     {
         $validated = $request->validate([
             'name'       => 'required|string|max:255',
             'species'    => 'required|string|max:255',
-            'breed'      => 'nullable|string|max:255',
+            'breed'      => 'nullable|string|max:100',
             'birth_date' => 'required|date',
             'user_id'    => 'required|exists:users,id',
         ]);
@@ -103,7 +112,7 @@ class AdminController extends Controller
         $pet->update($validated);
 
         return redirect()->route('admin.pets')
-            ->with('success', "Dane zwierzaka <b>{$pet->name}</b> zostały pomyślnie zaktualizowane.");
+            ->with('success', "Dane zwierzaka <b>{$pet->name}</b> zostały zaktualizowane.");
     }
 
     public function destroyPet(Pet $pet)
@@ -111,6 +120,6 @@ class AdminController extends Controller
         $petName = $pet->name;
         $pet->delete();
         
-        return back()->with('success', "Zwierzak o imieniu <b>{$petName}</b> został pomyślnie usunięty z systemu.");
+        return back()->with('success', "Zwierzak o imieniu <b>{$petName}</b> został usunięty.");
     }
 }
