@@ -53,7 +53,7 @@ class PetController extends Controller
             'name' => 'required|string|max:255',
             'species' => 'required|string|max:100',
             'breed' => 'nullable|string|max:100',
-            'birth_date' => 'nullable|date',
+            'birth_date' => 'nullable|date|before_or_equal:today',
         ]);
 
         $pet->update($validated);
@@ -68,5 +68,10 @@ class PetController extends Controller
 
         $pet->delete();
         return redirect()->route('pets.index')->with('success', 'Zwierzak został usunięty.');
+    }
+
+    public function create()
+    {
+        return view('pets.create');
     }
 }

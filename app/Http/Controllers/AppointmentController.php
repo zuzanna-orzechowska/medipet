@@ -47,7 +47,7 @@ class AppointmentController extends Controller
             'service_id' => 'required|exists:services,id',
             'doctor_id' => 'required|exists:users,id',
             'appointment_date' => 'required|date|after:now',
-            'description' => 'nullable|string|max:500',
+            'notes' => 'nullable|string|max:500',
         ]);
 
         $pet = Pet::findOrFail($validated['pet_id']);
@@ -63,7 +63,7 @@ class AppointmentController extends Controller
             'service_id' => $validated['service_id'],
             'appointment_date' => $validated['appointment_date'],
             'status' => 'oczekująca',
-            'notes' => $validated['description'],
+            'notes' => $validated['notes'],
         ]);
 
         return redirect()->route('appointments.index')->with('success', 'Wizyta została umówiona!');

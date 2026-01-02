@@ -8,32 +8,30 @@ use App\Models\Pet;
 use App\Models\Service;
 use App\Models\Appointment;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        //role
         $adminRole = Role::create(['name' => 'admin']);
         $doctorRole = Role::create(['name' => 'lekarz']);
         $clientRole = Role::create(['name' => 'klient']);
-
-        //usługi
         $services = Service::factory(5)->create();
 
-        //administrator
         User::factory()->create([
             'name' => 'Zuza Administrator',
             'email' => 'admin@vet.pl',
-            'password' => bcrypt('TajneJezoweHaslo333'),
+            'password' => Hash::make('TajneJezoweHaslo333'), 
             'role_id' => $adminRole->id,
         ]);
 
-        //lekarze
-        $doctors = User::factory(3)->doctor()->create();
+        $doctors = User::factory(3)->create([
+            'role_id' => $doctorRole->id
+        ]);
 
-        //klienci i ich zwierzęta
-        User::factory(10)->create()->each(function ($client) use ($doctors, $services) {
+        User::factory(10)->create(['role_id' => $clientRole->id])->each(function ($client) use ($doctors, $services) {
+            
             $pets = Pet::factory(rand(1, 2))->create([
                 'user_id' => $client->id
             ]);
@@ -44,6 +42,7 @@ class DatabaseSeeder extends Seeder
                     'doctor_id' => $doctors->random()->id,
                     'pet_id' => $pet->id,
                     'service_id' => $services->random()->id,
+                    'status' => 'oczekująca',
                 ]);
             }
         });
