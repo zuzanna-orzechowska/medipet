@@ -5,7 +5,6 @@
             <span class="text-2xl font-extrabold tracking-tight text-emerald-900">Medi<span class="text-emerald-500">Pet</span></span>
         </a>
         <h2 class="mt-6 text-xl font-bold text-slate-800">Dołącz do MediPet</h2>
-        <p class="text-sm text-slate-500">Stwórz konto, aby dbać o zdrowie swoich pupili online.</p>
     </div>
 
     <form method="POST" action="{{ route('register') }}" aria-label="Formularz rejestracji nowego konta">
