@@ -100,4 +100,21 @@
             </div>
         </div>
     </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInput = document.getElementById('appointment_date');
+
+        dateInput.addEventListener('change', function() {
+            if (!this.value) return;
+
+            const selectedDate = new Date(this.value);
+            const hours = selectedDate.getHours();
+            
+            if (hours < 8 || hours >= 20) {
+                alert('Przepraszamy, klinika jest czynna w godzinach 08:00 - 20:00. Prosimy o wybranie innej godziny.');
+                this.value = '';
+            }
+        });
+    });
+</script>
 </x-app-layout>

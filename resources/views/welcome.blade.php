@@ -43,16 +43,32 @@
                     <a href="#uslugi" class="text-sm font-semibold text-slate-600 hover:text-emerald-600 transition">Usługi</a>
                     <div class="h-6 w-px bg-slate-200" aria-hidden="true"></div>
                     @if (Route::has('login'))
-                        @auth
-                            <a href="{{ url('/dashboard') }}" class="bg-emerald-600 text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-md hover:bg-emerald-700 transition-all">
-                                Panel klienta
-                            </a>
-                        @else
-                            <a href="{{ route('login') }}" class="text-sm font-bold text-emerald-700 hover:text-emerald-900 transition">Logowanie</a>
-                            <a href="{{ route('register') }}" class="bg-emerald-600 text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-md hover:bg-emerald-700 transition-all">
-                                Załóż konto
-                            </a>
-                        @endauth
+                        <div class="flex items-center gap-4">
+                            @auth
+                                @php
+                                    $dashboardRoute = 'dashboard'; // domyślnie dla klienta
+                                    if(Auth::user()->role->name === 'admin') $dashboardRoute = 'admin.dashboard';
+                                    if(Auth::user()->role->name === 'lekarz') $dashboardRoute = 'doctor.dashboard';
+                                @endphp
+
+                                <a href="{{ route($dashboardRoute) }}" 
+                                class="bg-emerald-600 text-white px-6 py-2 rounded-full font-bold hover:bg-emerald-700 transition shadow-md">
+                                    Przejdź do Panelu
+                                </a>
+                                <form method="POST" action="{{ route('logout') }}" class="inline">
+                                    @csrf
+                                    <button type="submit" 
+                                            class="text-rose-600 font-bold hover:text-rose-800 transition uppercase text-xs tracking-widest outline-none focus:ring-2 focus:ring-rose-500 rounded px-2">
+                                        Wyloguj się
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('login') }}" class="font-bold text-emerald-700 hover:text-emerald-900 transition">Zaloguj się</a>
+                                @if (Route::has('register'))
+                                    <a href="{{ route('register') }}" class="bg-emerald-600 text-white px-6 py-2 rounded-full font-bold hover:bg-emerald-700 transition">Zarejestruj się</a>
+                                @endif
+                            @endauth
+                        </div>
                     @endif
                 </div>
             </div>
