@@ -20,7 +20,7 @@ class PetFactory extends Factory
             'name' => fake()->firstName(),
             'species' => fake()->randomElement(['Pies', 'Kot', 'Chomik', 'Papuga', 'Fretka', 'Jeż', 'Królik', 'Świnka morska']),
             'breed' => fake()->word(),
-            'birth_date' => fake()->date('Y-m-d', '-3 years'),
+            'birth_date' => fake()->dateTimeBetween('-3 years', 'now')->format('Y-m-d'),
         ];
     }
 }
