@@ -105,7 +105,7 @@ class AdminController extends Controller
             'name'       => 'required|string|max:255',
             'species'    => 'required|string|max:255',
             'breed'      => 'nullable|string|max:100',
-            'birth_date' => 'required|date',
+            'birth_date' => 'required|date|before_or_equal:today',
             'user_id'    => 'required|exists:users,id',
         ]);
 
