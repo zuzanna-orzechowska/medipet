@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MediPet</title>
+    <title>MediPet - Klinika Weterynaryjna</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800" rel="stylesheet" />
@@ -17,17 +17,21 @@
             background-image: radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.05) 0px, transparent 50%),
                               radial-gradient(at 100% 0%, rgba(5, 150, 105, 0.05) 0px, transparent 50%);
         }
+        :focus-visible {
+            outline: 3px solid #10b981;
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body class="gradient-mesh text-slate-900 antialiased">
 
-    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-emerald-50">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-emerald-50">
+        <nav class="max-w-7xl mx-auto px-6 lg:px-8" aria-label="Nawigacja główna">
             <div class="flex justify-between h-20 items-center">
                 
-                <a href="{{ url('/') }}" class="flex items-center gap-3 group">
+                <a href="{{ url('/') }}" class="flex items-center gap-3 group" aria-label="Strona główna MediPet">
                     <img src="{{ asset('images/logo.jpg') }}" 
-                        alt="MediPet Logo" 
+                        alt="Logo MediPet" 
                         class="w-10 h-10 rounded-xl shadow-lg group-hover:scale-110 transition-transform object-cover">
                     <span class="text-2xl font-extrabold tracking-tight text-emerald-900">
                         Medi<span class="text-emerald-500">Pet</span>
@@ -37,7 +41,7 @@
                 <div class="hidden md:flex items-center gap-8">
                     <a href="#o-nas" class="text-sm font-semibold text-slate-600 hover:text-emerald-600 transition">O nas</a>
                     <a href="#uslugi" class="text-sm font-semibold text-slate-600 hover:text-emerald-600 transition">Usługi</a>
-                    <div class="h-6 w-px bg-slate-200"></div>
+                    <div class="h-6 w-px bg-slate-200" aria-hidden="true"></div>
                     @if (Route::has('login'))
                         @auth
                             <a href="{{ url('/dashboard') }}" class="bg-emerald-600 text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-md hover:bg-emerald-700 transition-all">
@@ -52,16 +56,16 @@
                     @endif
                 </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <main>
-        <section class="relative pt-12 pb-20 lg:pt-24 lg:pb-32 overflow-hidden">
+    <main id="main-content">
+        <section class="relative pt-12 pb-20 lg:pt-24 lg:pb-32 overflow-hidden" aria-labelledby="hero-title">
             <div class="max-w-7xl mx-auto px-6 lg:px-8">
                 <div class="lg:grid lg:grid-cols-12 lg:gap-12 items-center">
                     
                     <div class="lg:col-span-6 text-center lg:text-left">
-                        <h1 class="text-5xl lg:text-7xl font-black text-slate-900 leading-[1.1] mb-8">
+                        <h1 id="hero-title" class="text-5xl lg:text-7xl font-black text-slate-900 leading-[1.1] mb-8">
                             Zdrowie Twojego przyjaciela w <span class="text-emerald-600 italic">dobrych</span> rękach.
                         </h1>
                         <p class="text-lg text-slate-600 leading-relaxed mb-10 max-w-xl mx-auto lg:mx-0">
@@ -78,10 +82,10 @@
                     </div>
 
                     <div class="lg:col-span-6 mt-16 lg:mt-0 relative">
-                        <div class="absolute -top-12 -right-12 w-64 h-64 bg-emerald-100 rounded-full blur-3xl opacity-50"></div>
+                        <div class="absolute -top-12 -right-12 w-64 h-64 bg-emerald-100 rounded-full blur-3xl opacity-50" aria-hidden="true"></div>
                         
                         <div class="relative bg-emerald-50 border-2 border-white rounded-[2rem] aspect-square overflow-hidden shadow-2xl flex items-center justify-center group">
-                            <img src="{{ asset('images/lekarze.jpg') }}" alt="Nasi Lekarze" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <img src="{{ asset('images/lekarze.jpg') }}" alt="Nasi uśmiechnięci lekarze weterynarii gotowi do pomocy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                             <div class="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur p-4 rounded-xl shadow-lg border border-emerald-50">
                                 <p class="text-xs font-bold text-emerald-800 uppercase tracking-widest mb-1">Nasz Zespół</p>
                                 <p class="text-sm text-slate-600 italic">"Zapewniamy opiekę 24/7 dla nagłych przypadków."</p>
@@ -93,52 +97,54 @@
             </div>
         </section>
 
-        <section id="o-nas" class="py-24 bg-emerald-50/50">
+        <section id="o-nas" class="py-24 bg-emerald-50/50" aria-labelledby="about-title">
             <div class="max-w-7xl mx-auto px-6 lg:px-8">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div>
-                        <h2 class="text-3xl lg:text-5xl font-extrabold text-slate-900 mb-6">Poznaj MediPet</h2>
+                        <h2 id="about-title" class="text-3xl lg:text-5xl font-extrabold text-slate-900 mb-6">Poznaj MediPet</h2>
                         <p class="text-slate-600 text-lg mb-6 leading-relaxed">
                             Jesteśmy nowoczesną kliniką weterynaryjną, która powstała z miłości do zwierząt. Naszą misją jest zapewnienie najwyższej jakości opieki medycznej w przyjaznej atmosferze.
                         </p>
-                        <ul class="space-y-4">
+                        <ul class="space-y-4" role="list">
                             <li class="flex items-center gap-3 font-semibold text-slate-700">
-                                <span class="text-emerald-500">✔</span> Nowoczesna aparatura diagnostyczna
+                                <span class="text-emerald-500" aria-hidden="true">✔</span> Nowoczesna aparatura diagnostyczna
                             </li>
                             <li class="flex items-center gap-3 font-semibold text-slate-700">
-                                <span class="text-emerald-500">✔</span> Doświadczona kadra lekarzy weterynarii
+                                <span class="text-emerald-500" aria-hidden="true">✔</span> Doświadczona kadra lekarzy weterynarii
                             </li>
                             <li class="flex items-center gap-3 font-semibold text-slate-700">
-                                <span class="text-emerald-500">✔</span> Indywidualne podejście do każdego pacjenta
+                                <span class="text-emerald-500" aria-hidden="true">✔</span> Indywidualne podejście do każdego pacjenta
                             </li>
                         </ul>
                     </div>
                     <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-emerald-100">
-                    <div class="text-center">
-                        <img src="{{ asset('images/lekarz.jpg') }}" 
-                            alt="Lekarz" 
-                            class="w-32 h-32 mx-auto mb-4 rounded-full object-cover border-2 border-emerald-100 shadow-sm">
-                        
-                        <h4 class="text-2xl font-bold mb-2">Ponad 10 lat</h4>
-                        <p class="text-slate-500 font-medium uppercase tracking-widest text-sm">Doświadczenia w branży</p>
+                        <div class="text-center">
+                            <img src="{{ asset('images/lekarz.jpg') }}" 
+                                alt="Dr Jan Kowalski - nasz najbardziej doświadczony specjalista" 
+                                class="w-32 h-32 mx-auto mb-4 rounded-full object-cover border-2 border-emerald-100 shadow-sm">
+                            
+                            <h3 class="text-2xl font-bold mb-2">Ponad 10 lat</h3>
+                            <p class="text-slate-500 font-medium uppercase tracking-widest text-sm">Doświadczenia w branży</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="uslugi" class="py-24 bg-white">
+        <section id="uslugi" class="py-24 bg-white" aria-labelledby="services-title">
             <div class="max-w-7xl mx-auto px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-20">
-                    <h2 class="text-3xl lg:text-5xl font-extrabold text-slate-900 mb-6">Nasze Usługi</h2>
+                    <h2 id="services-title" class="text-3xl lg:text-5xl font-extrabold text-slate-900 mb-6">Nasze Usługi</h2>
                     <p class="text-slate-500 text-lg">Poniżej znajdziesz listę najczęściej wybieranych zabiegów i konsultacji.</p>
                 </div>
 
                 <div class="bg-white border border-slate-100 rounded-[2.5rem] shadow-xl overflow-hidden max-w-4xl mx-auto">
                     <table class="w-full text-left border-collapse">
+                        <caption class="sr-only">Cennik usług kliniki MediPet</caption>
                         <thead>
                             <tr class="bg-slate-50">
-                                <th class="p-6 font-black text-slate-900 uppercase text-xs tracking-widest">Usługa</th>
-                                <th class="p-6 font-black text-slate-900 uppercase text-xs tracking-widest text-right">Cena od</th>
+                                <th scope="col" class="p-6 font-black text-slate-900 uppercase text-xs tracking-widest">Usługa</th>
+                                <th scope="col" class="p-6 font-black text-slate-900 uppercase text-xs tracking-widest text-right">Cena od</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
@@ -169,12 +175,12 @@
         </section>
     </main>
 
-    <footer class="bg-slate-900 py-16">
+    <footer class="bg-slate-900 py-16 text-white">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center gap-8">
                 <div class="flex items-center gap-3">
-                    <img src="{{ asset('images/logo.jpg') }}" alt="MediPet Logo" class="w-8 h-8 rounded-lg object-cover">
-                    <span class="text-xl font-bold text-white">MediPet</span>
+                    <img src="{{ asset('images/logo.jpg') }}" alt="MediPet Logo" class="w-8 h-8 rounded-lg object-cover" aria-hidden="true">
+                    <span class="text-xl font-bold">MediPet</span>
                 </div>
                 <p class="text-slate-400 text-sm">
                     &copy; MediPet {{ date('Y') }}
