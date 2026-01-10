@@ -21,9 +21,37 @@
             outline: 3px solid #10b981;
             outline-offset: 2px;
         }
+
+        html { font-size: 16px; transition: font-size 0.2s; } 
+        html.font-lg { font-size: 19px; }
+        html.font-xl { font-size: 22px; }
+        html.high-contrast {
+                filter: invert(100%) hue-rotate(180deg) brightness(1.1) !important;
+                background-color: #000 !important;
+            }
+        html.high-contrast img, 
+        html.high-contrast svg,
+        html.high-contrast .no-invert {
+                filter: invert(100%) hue-rotate(180deg) !important;
+            }
     </style>
 </head>
 <body class="gradient-mesh text-slate-900 antialiased">
+    <div class="bg-slate-800 text-white py-1 px-4 text-xs" role="region" aria-label="Ułatwienia dostępu">
+            <div class="max-w-7xl mx-auto flex justify-between items-center">
+                <div class="flex gap-4">
+                    <button onclick="toggleGlobalContrast()" class="hover:text-emerald-400 font-bold uppercase tracking-tighter">
+                        Tryb Kontrastu
+                    </button>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <span>Rozmiar tekstu:</span>
+                    <button onclick="updateGlobalFontSize('base')" class="px-2 border border-slate-600 hover:bg-slate-700">A</button>
+                    <button onclick="updateGlobalFontSize('lg')" class="px-2 border border-slate-600 hover:bg-slate-700 font-bold">A+</button>
+                    <button onclick="updateGlobalFontSize('xl')" class="px-2 border border-slate-600 hover:bg-slate-700 font-black">A++</button>
+                </div>
+            </div>
+    </div>
 
     <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-emerald-50">
         <nav class="max-w-7xl mx-auto px-6 lg:px-8" aria-label="Nawigacja główna">
@@ -209,5 +237,38 @@
         </div>
     </footer>
 
+    <script>
+            function applySavedSettings() {
+                const html = document.documentElement;
+                const contrast = localStorage.getItem('medipet-contrast');
+                const fontSize = localStorage.getItem('medipet-font-size');
+
+                if (contrast === 'true') {
+                    html.classList.add('high-contrast');
+                }
+
+                html.classList.remove('font-lg', 'font-xl');
+                if (fontSize === 'lg') html.classList.add('font-lg');
+                if (fontSize === 'xl') html.classList.add('font-xl');
+            }
+
+            function toggleGlobalContrast() {
+                const html = document.documentElement;
+                html.classList.toggle('high-contrast');
+                localStorage.setItem('medipet-contrast', html.classList.contains('high-contrast'));
+            }
+
+            function updateGlobalFontSize(size) {
+                const html = document.documentElement;
+                html.classList.remove('font-lg', 'font-xl');
+                
+                if (size === 'lg') html.classList.add('font-lg');
+                if (size === 'xl') html.classList.add('font-xl');
+                
+                localStorage.setItem('medipet-font-size', size);
+            }
+
+            document.addEventListener('DOMContentLoaded', applySavedSettings);
+        </script>
 </body>
 </html>

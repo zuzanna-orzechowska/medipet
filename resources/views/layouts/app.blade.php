@@ -13,8 +13,25 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <style>
+            html { font-size: 16px; transition: font-size 0.2s; } 
+            html.font-lg { font-size: 19px; }
+            html.font-xl { font-size: 22px; }
+            html.high-contrast {
+                filter: invert(100%) hue-rotate(180deg) brightness(1.1) !important;
+                background-color: #000 !important;
+            }
+            html.high-contrast img, 
+            html.high-contrast svg,
+            html.high-contrast .no-invert {
+                filter: invert(100%) hue-rotate(180deg) !important;
+            }
+        </style>
+        
     </head>
     <body class="font-sans antialiased">
+       
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
 
@@ -32,5 +49,39 @@
                 {{ $slot }}
             </main>
         </div>
+
+        <script>
+            function applySavedSettings() {
+                const html = document.documentElement;
+                const contrast = localStorage.getItem('medipet-contrast');
+                const fontSize = localStorage.getItem('medipet-font-size');
+
+                if (contrast === 'true') {
+                    html.classList.add('high-contrast');
+                }
+
+                html.classList.remove('font-lg', 'font-xl');
+                if (fontSize === 'lg') html.classList.add('font-lg');
+                if (fontSize === 'xl') html.classList.add('font-xl');
+            }
+
+            function toggleGlobalContrast() {
+                const html = document.documentElement;
+                html.classList.toggle('high-contrast');
+                localStorage.setItem('medipet-contrast', html.classList.contains('high-contrast'));
+            }
+
+            function updateGlobalFontSize(size) {
+                const html = document.documentElement;
+                html.classList.remove('font-lg', 'font-xl');
+                
+                if (size === 'lg') html.classList.add('font-lg');
+                if (size === 'xl') html.classList.add('font-xl');
+                
+                localStorage.setItem('medipet-font-size', size);
+            }
+
+            document.addEventListener('DOMContentLoaded', applySavedSettings);
+        </script>
     </body>
 </html>

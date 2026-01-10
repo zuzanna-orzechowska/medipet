@@ -17,18 +17,37 @@ class AdminController extends Controller
         $this->adminService = $adminService;
     }
 
-    public function dashboard()
+    public function dashboard(Request $request)
     {
-        //statystyki w serwisie
-        $stats = $this->adminService->formatDashboardStats(
-            User::count(), 
-            Pet::count(), 
-            Appointment::count()
-        );
+        $search = $request->input('search');
+        
+        //statystyki
+        $stats = [
+            'users' => \App\Models\User::count(),
+            'pets' => \App\Models\Pet::count(),
+            'appointments' => \App\Models\Appointment::count(),
+        ];
 
-        return view('admin.dashboard', compact('stats'));
+        $searchResults = [
+            'users' => collect(),
+            'pets' => collect()
+        ];
+
+        if ($search) {
+            $searchResults['users'] = \App\Models\User::where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->with('role')
+                ->limit(5)
+                ->get();
+
+            $searchResults['pets'] = \App\Models\Pet::where('name', 'like', "%{$search}%")
+                ->orWhere('species', 'like', "%{$search}%")
+                ->limit(5)
+                ->get();
+        }
+
+        return view('admin.dashboard', compact('stats', 'searchResults'));
     }
-
     public function users()
     {
         $users = User::with('role')->get();

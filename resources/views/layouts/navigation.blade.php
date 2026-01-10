@@ -1,5 +1,21 @@
 <nav class="bg-white border-b border-emerald-100" aria-label="Menu panelu użytkownika">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-slate-800 text-white py-1 px-4 text-xs" role="region" aria-label="Ułatwienia dostępu">
+            <div class="max-w-7xl mx-auto flex justify-between items-center">
+                <div class="flex gap-4">
+                    <button onclick="toggleGlobalContrast()" class="hover:text-emerald-400 font-bold uppercase tracking-tighter">
+                        Tryb Kontrastu
+                    </button>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <span>Rozmiar tekstu:</span>
+                    <button onclick="updateGlobalFontSize('base')" class="px-2 border border-slate-600 hover:bg-slate-700">A</button>
+                    <button onclick="updateGlobalFontSize('lg')" class="px-2 border border-slate-600 hover:bg-slate-700 font-bold">A+</button>
+                    <button onclick="updateGlobalFontSize('xl')" class="px-2 border border-slate-600 hover:bg-slate-700 font-black">A++</button>
+                </div>
+            </div>
+        </div>
+
         <div class="flex justify-between h-16">
             <div class="flex">
                 <div class="shrink-0 flex items-center">
