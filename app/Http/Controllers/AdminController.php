@@ -48,9 +48,27 @@ class AdminController extends Controller
 
         return view('admin.dashboard', compact('stats', 'searchResults'));
     }
-    public function users()
+    
+    public function users(Request $request)
     {
-        $users = User::with('role')->get();
+        $query = User::with('role');
+
+        if ($request->filled('role')) {
+            $query->whereHas('role', function($q) use ($request) {
+                $q->where('name', $request->role);
+            });
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $users = $query->get();
+
         return view('admin.users', compact('users'));
     }
 
@@ -73,10 +91,35 @@ class AdminController extends Controller
         return redirect()->route('admin.users')->with('success', "Dane użytkownika <b>{$user->name}</b> zostały zaktualizowane.");
     }
 
-    public function appointments()
+    public function appointments(Request $request)
     {
-        $appointments = Appointment::with(['client', 'doctor', 'pet', 'service'])->latest()->get();
-        return view('admin.appointments', compact('appointments'));
+        $query = Appointment::with(['client', 'doctor', 'pet', 'service']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->whereHas('pet', function($pq) use ($search) {
+                    $pq->where('name', 'like', "%{$search}%");
+                })->orWhereHas('client', function($cq) use ($search) {
+                    $cq->where('name', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        if ($request->filled('doctor')) {
+            $query->where('doctor_id', $request->doctor);
+        }
+
+        $sort = $request->get('sort', 'desc');
+        $query->orderBy('appointment_date', $sort);
+
+        $appointments = $query->get();
+        
+        $doctors = User::whereHas('role', function($q) {
+            $q->where('name', 'lekarz');
+        })->get();
+
+        return view('admin.appointments', compact('appointments', 'doctors'));
     }
 
     public function updateAppointmentStatus(Request $request, Appointment $appointment)
@@ -106,9 +149,27 @@ class AdminController extends Controller
         return back()->with('success', 'Użytkownik został pomyślnie usunięty z systemu.');
     }
 
-    public function pets()
+    public function pets(Request $request)
     {
-        $pets = Pet::with('user')->get();
+        $query = Pet::with('user');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                ->orWhereHas('user', function($uq) use ($search) {
+                    $uq->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        if ($request->filled('species')) {
+            $query->where('species', $request->species);
+        }
+
+        $pets = $query->orderBy('name')->get();
+
         return view('admin.pets', compact('pets'));
     }
 
